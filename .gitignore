@@ -5,3 +5,5 @@ node_modules
 **/*wallet.json
 
 **/yarn.lock
+
+yarn-error.log
