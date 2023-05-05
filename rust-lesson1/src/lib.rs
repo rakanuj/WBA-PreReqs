@@ -1,10 +1,12 @@
+mod programs;
 
 #[cfg(test)]
 mod tests {
     use solana_client::rpc_client::RpcClient;
     use solana_program::{
         pubkey::Pubkey,
-        system_instruction::transfer
+        system_instruction::transfer,
+        system_program
     };
     use solana_sdk::{
         signature::{Keypair, Signer, read_keypair_file},
@@ -12,6 +14,7 @@ mod tests {
         message::Message,
     };
     use std::str::FromStr;
+    use crate::programs::wba_prereq::{WbaPrereqProgram, CompleteArgs, UpdateArgs};
 
     const RPC_URL: &str = "https://api.devnet.solana.com";
 
@@ -63,7 +66,7 @@ mod tests {
             &[transfer(
                 &keypair.pubkey(),
                 &to_pubkey,
-                1_000_000
+                1_000_000,
             )], 
             Some(&keypair.pubkey()),
             &vec![&keypair],
@@ -83,6 +86,24 @@ mod tests {
         ); 
     }
 
+    #[test]
+    fn get_balance() {
+        // Import our keypair
+        let keypair = read_keypair_file("dev-wallet.json").expect("Couldn't find wallet file");
+        
+        // Define our WBA public key
+        let to_pubkey = Pubkey::from_str("4GEMhfsoYJ1tdNU3iB8BXJ3ckPJSRuvSgCSaMF9QAanZ").unwrap();
+        
+        // Create a Solana devnet connection
+        let rpc_client = RpcClient::new(RPC_URL);
+           
+        // Get balance of dev wallet
+        let balance = rpc_client
+            .get_balance(&keypair.pubkey())
+            .expect("Failed to get balance");
+
+        println!("The public key {} has a balance of:\n\t{}", to_pubkey.to_string(), balance);
+    }
 
     #[test]
     fn dump_all_sol() {
@@ -144,5 +165,42 @@ mod tests {
             https://explorer.solana.com/tx/{}/?cluster=devnet",
             signature
         ); 
+    }
+
+    #[test]
+    fn enroll() {
+        // Create a Solana devnet connection
+        let rpc_client = RpcClient::new(RPC_URL);
+
+        // Let's define our accounts
+        let signer = read_keypair_file("wba-wallet.json").expect("Couldn't find wallet file");
+
+        let prereq = WbaPrereqProgram::derive_program_address(&[b"prereq", signer.pubkey().to_bytes().as_ref()]);
+
+        // Define our instruction data
+        let args = CompleteArgs {
+            github: b"rakanuj".to_vec()
+        };
+
+        // Get recent blockhash
+        let blockhash = rpc_client
+            .get_latest_blockhash()
+            .expect("Failed to get recent blockhash");
+
+        // now invoke the complete functiono
+        let transaction = WbaPrereqProgram::complete(
+            &[&signer.pubkey(), &prereq, &system_program::id()],
+            &args,
+            Some(&signer.pubkey()),
+            &[&signer],
+            blockhash);
+
+        // Send the transaction
+        let signature = rpc_client
+            .send_and_confirm_transaction(&transaction)
+            .expect("Failed to send transaction");
+
+        // Print our transaction out
+        println!("Success! Check out your TX here: https://explorer.solana.com/tx/{}/?cluster=devnet", signature);
     }
 }

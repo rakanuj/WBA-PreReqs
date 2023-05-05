@@ -411,8 +411,18 @@ version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "15bf3650200d8bffa99015595e10f1fbd17de07abbc25bb067da79e769939bfa"
 dependencies = [
- "borsh-derive",
+ "borsh-derive 0.9.3",
  "hashbrown 0.11.2",
+]
+
+[[package]]
+name = "borsh"
+version = "0.10.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4114279215a005bc675e386011e594e1d9b800918cea18fcadadcce864a2046b"
+dependencies = [
+ "borsh-derive 0.10.3",
+ "hashbrown 0.12.3",
 ]
 
 [[package]]
@@ -421,8 +431,21 @@ version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6441c552f230375d18e3cc377677914d2ca2b0d36e52129fe15450a2dce46775"
 dependencies = [
- "borsh-derive-internal",
- "borsh-schema-derive-internal",
+ "borsh-derive-internal 0.9.3",
+ "borsh-schema-derive-internal 0.9.3",
+ "proc-macro-crate 0.1.5",
+ "proc-macro2 1.0.56",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "borsh-derive"
+version = "0.10.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0754613691538d51f329cce9af41d7b7ca150bc973056f1156611489475f54f7"
+dependencies = [
+ "borsh-derive-internal 0.10.3",
+ "borsh-schema-derive-internal 0.10.3",
  "proc-macro-crate 0.1.5",
  "proc-macro2 1.0.56",
  "syn 1.0.109",
@@ -440,10 +463,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "borsh-derive-internal"
+version = "0.10.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "afb438156919598d2c7bad7e1c0adf3d26ed3840dbc010db1a882a65583ca2fb"
+dependencies = [
+ "proc-macro2 1.0.56",
+ "quote 1.0.26",
+ "syn 1.0.109",
+]
+
+[[package]]
 name = "borsh-schema-derive-internal"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cdbd5696d8bfa21d53d9fe39a714a18538bad11492a42d066dbbc395fb1951c0"
+dependencies = [
+ "proc-macro2 1.0.56",
+ "quote 1.0.26",
+ "syn 1.0.109",
+]
+
+[[package]]
+name = "borsh-schema-derive-internal"
+version = "0.10.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "634205cc43f74a1b9046ef87c4540ebda95696ec0f315024860cad7c5b0f5ccd"
 dependencies = [
  "proc-macro2 1.0.56",
  "quote 1.0.26",
@@ -692,6 +737,15 @@ name = "constant_time_eq"
 version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "13418e745008f7349ec7e449155f419a61b92b58a99cc3616942b926825ec76b"
+
+[[package]]
+name = "convert_case"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ec182b0ca2f35d8fc196cf3404988fd8b8c739a4d270ff118a398feb0cbec1ca"
+dependencies = [
+ "unicode-segmentation",
+]
 
 [[package]]
 name = "core-foundation"
@@ -2543,7 +2597,9 @@ dependencies = [
 name = "rust-lesson1"
 version = "0.1.0"
 dependencies = [
+ "borsh 0.10.3",
  "solana-client",
+ "solana-idlgen",
  "solana-program",
  "solana-sdk",
 ]
@@ -3111,6 +3167,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "solana-idlgen"
+version = "0.1.0"
+source = "git+https://github.com/deanmlittle/solana-idlgen.git#8611786461d20ef1e82da4862610be306249a21e"
+dependencies = [
+ "convert_case",
+ "proc-macro2 1.0.56",
+ "quote 1.0.26",
+ "serde",
+ "serde_json",
+ "solana-sdk",
+ "syn 2.0.15",
+]
+
+[[package]]
 name = "solana-logger"
 version = "1.15.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3208,8 +3278,8 @@ dependencies = [
  "bincode",
  "bitflags",
  "blake3",
- "borsh",
- "borsh-derive",
+ "borsh 0.9.3",
+ "borsh-derive 0.9.3",
  "bs58",
  "bv",
  "bytemuck",
@@ -3429,7 +3499,7 @@ dependencies = [
  "base64 0.13.1",
  "bincode",
  "bitflags",
- "borsh",
+ "borsh 0.9.3",
  "bs58",
  "bytemuck",
  "byteorder",
@@ -3567,7 +3637,7 @@ dependencies = [
  "Inflector",
  "base64 0.13.1",
  "bincode",
- "borsh",
+ "borsh 0.9.3",
  "bs58",
  "lazy_static",
  "log",
@@ -3711,7 +3781,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fbc000f0fdf1f12f99d77d398137c1751345b18c88258ce0f99b7872cf6c9bd6"
 dependencies = [
  "assert_matches",
- "borsh",
+ "borsh 0.9.3",
  "num-derive",
  "num-traits",
  "solana-program",
@@ -4161,6 +4231,12 @@ checksum = "5c5713f0fc4b5db668a2ac63cdb7bb4469d8c9fed047b1d0292cc7b0ce2ba921"
 dependencies = [
  "tinyvec",
 ]
+
+[[package]]
+name = "unicode-segmentation"
+version = "1.10.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1dd624098567895118886609431a7c3b8f516e41d30e0643f03d94592a147e36"
 
 [[package]]
 name = "unicode-width"
